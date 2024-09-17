@@ -7,14 +7,13 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/tomr-ninja/flag3"
-	"github.com/tomr-ninja/flag3/tree"
 )
 
 func TestParseArgs(t *testing.T) {
-	t1 := tree.New("first")
+	t1 := flag3.New("first")
 	t1.Subcommand("second")
 
-	t2 := tree.New("third")
+	t2 := flag3.New("third")
 	t2.Subcommand("fourth")
 
 	type (

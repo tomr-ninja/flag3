@@ -2,18 +2,16 @@ package flag3
 
 import (
 	"os"
-
-	"github.com/tomr-ninja/flag3/tree"
 )
 
 const defaultCapacity = 3 // empirical optimal value
 
-func Parse(args []string, trees ...*tree.Tree) (CommandsChain, error) {
+func Parse(args []string, trees ...*Tree) (CommandsChain, error) {
 	res := make([]commandWithArgs, 0, defaultCapacity)
 
 	t := pickTree(args[0], trees)
 	if t == nil {
-		return CommandsChain{}, tree.ErrNoMatchedTree
+		return CommandsChain{}, ErrNoMatchedTree
 	}
 
 	lastCommandPos := 0
@@ -38,11 +36,11 @@ func Parse(args []string, trees ...*tree.Tree) (CommandsChain, error) {
 }
 
 // ParseCLI - Parse wrapper to simplify CLI parsing.
-func ParseCLI(t *tree.Tree) (CommandsChain, error) {
+func ParseCLI(t *Tree) (CommandsChain, error) {
 	return Parse(os.Args, t)
 }
 
-func pickTree(arg string, nodes []*tree.Tree) *tree.Tree {
+func pickTree(arg string, nodes []*Tree) *Tree {
 	for _, t := range nodes {
 		if t.Command() == arg {
 			return t

@@ -5,12 +5,11 @@ import (
 	"strings"
 
 	"github.com/tomr-ninja/flag3"
-	"github.com/tomr-ninja/flag3/tree"
 )
 
 // try 'go run example/cli/main.go --capitalized=true fizz -i 3'
 func main() {
-	t := tree.NewCLI()
+	t := flag3.NewCLI()
 	t.Subcommand("foo").Subcommand("bar")
 	t.Subcommand("fizz")
 

@@ -1,4 +1,4 @@
-package tree
+package flag3
 
 import (
 	"errors"
