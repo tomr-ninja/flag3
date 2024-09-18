@@ -1,6 +1,7 @@
 package flag3_test
 
 import (
+	"os"
 	"strings"
 	"testing"
 
@@ -115,4 +116,35 @@ func TestParseArgs(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestParseArgsError(t *testing.T) {
+	tree := flag3.New("first").Subcommand("second")
+
+	_, err := flag3.Parse([]string{"unknown"}, tree)
+	require.Error(t, err)
+
+	_, err = flag3.Parse([]string{}, tree)
+	require.Error(t, err)
+}
+
+func TestParseArgsCLI(t *testing.T) {
+	osArgs := os.Args
+	os.Args = []string{"first", "-a", "second", "-b"}
+	defer func() {
+		os.Args = osArgs
+	}()
+
+	tree := flag3.New("first").Subcommand("second")
+
+	cmd, err := flag3.ParseCLI(tree)
+	require.NoError(t, err)
+
+	require.True(t, cmd.Next())
+	require.Equal(t, "first", cmd.Command())
+	require.Equal(t, []string{"-a"}, cmd.Args())
+
+	require.True(t, cmd.Next())
+	require.Equal(t, "second", cmd.Command())
+	require.Equal(t, []string{"-b"}, cmd.Args())
 }

@@ -1,11 +1,6 @@
 package flag3
 
-import (
-	"errors"
-	"os"
-)
-
-var ErrNoMatchedTree = errors.New("no tree matched")
+import "os"
 
 // Tree - Represents a command tree.
 type Tree struct {

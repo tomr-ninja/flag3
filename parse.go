@@ -1,12 +1,22 @@
 package flag3
 
 import (
+	"errors"
 	"os"
 )
 
 const defaultCapacity = 3 // empirical optimal value
 
+var (
+	ErrNoMatchedTree = errors.New("no tree matched")
+	ErrNoArgs        = errors.New("no args provided")
+)
+
 func Parse(args []string, trees ...*Tree) (CommandsChain, error) {
+	if len(args) < 1 {
+		return CommandsChain{}, ErrNoArgs
+	}
+
 	res := make([]commandWithArgs, 0, defaultCapacity)
 
 	t := pickTree(args[0], trees)
