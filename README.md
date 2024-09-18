@@ -38,7 +38,10 @@ than a subcommand).
 ### Step 2: parse your os.Args
 
 ```go
-root, next, err := flag3.ParseCLI(tree)
+cmd, err := flag3.ParseCLI(tree)
+// returns a boolean indicating that there is a command.
+// For CLIs there is always at least an entry point (the executable's name), so no need to check
+_ = cmd.Next()
 ```
 
 Now, given that your executable is named `docker`, and you do exactly this:
@@ -47,15 +50,15 @@ Now, given that your executable is named `docker`, and you do exactly this:
 docker --log-level=debug run -p 8080:80 --name=web nginx
 ```
 
-your `root.Command` is gonna be 'docker', and `root.Args` is `['--log-level=debug']`.
+your `cmd.Command()` is gonna be 'docker', and `cmd.Args()` is `['--log-level=debug']`.
 
-After you call `next()`:
+After you call `Next()` again:
 
 ```go
-command, ok := next()
+ok := cmd.Next()
 ```
 
-your `command.Command` is 'run', and `command.Args` is `['-p', '8080:80', '--name=web', 'nginx']`.
+your `cmd.Command()` is 'run', and `cmd.Args()` is `['-p', '8080:80', '--name=web', 'nginx']`.
 
 So basically what flag3 does for you is just splitting os.Args meaningfully and defining what is
 the command and what is it's arguments in each fragment. You still might want to use a
