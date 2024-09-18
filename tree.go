@@ -26,6 +26,19 @@ func (t *Tree) Next() []*Tree {
 	return t.next
 }
 
+func (t *Tree) MaxPathLen() int {
+	if t == nil {
+		return 0
+	}
+
+	maxSubPath := 0
+	for _, next := range t.next {
+		maxSubPath = max(maxSubPath, next.MaxPathLen())
+	}
+
+	return maxSubPath + 1
+}
+
 // NewCLI - Create a new tree with the root command name set to the current executable name.
 // Just a convenience function to avoid having to pass os.Args[0] to New.
 func NewCLI() *Tree {

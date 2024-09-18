@@ -81,6 +81,19 @@ func TestParseArgs(t *testing.T) {
 				},
 			},
 		},
+		{
+			input: "first -a second second",
+			chain: []commandWithArgs{
+				{
+					Command: "first",
+					Args:    []string{"-a"},
+				},
+				{
+					Command: "second",
+					Args:    []string{"second"},
+				},
+			},
+		},
 	}
 
 	for _, tc := range testCases {
