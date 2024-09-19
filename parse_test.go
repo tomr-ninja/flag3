@@ -135,7 +135,8 @@ func TestParseArgsCLI(t *testing.T) {
 		os.Args = osArgs
 	}()
 
-	tree := flag3.New("first").Subcommand("second")
+	tree := flag3.New("first")
+	tree.Subcommand("second")
 
 	cmd, err := flag3.ParseCLI(tree)
 	require.NoError(t, err)
