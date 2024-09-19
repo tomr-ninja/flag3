@@ -35,12 +35,9 @@ func ParseTo(chain *CommandsChain, args []string, trees ...*Tree) error {
 			continue
 		}
 
-		lastCommandArgs := args[lastCommandPos+1 : i]
-		if cap(chain.values[len(chain.values)-1].Args) < len(lastCommandArgs) {
-			chain.values[len(chain.values)-1].Args = make([]string, len(lastCommandArgs))
-		}
-		chain.values[len(chain.values)-1].Args = chain.values[len(chain.values)-1].Args[:len(lastCommandArgs)]
-		copy(chain.values[len(chain.values)-1].Args, lastCommandArgs)
+		commandArgs := args[lastCommandPos+1 : i]
+		chain.values[len(chain.values)-1].Args = chain.values[len(chain.values)-1].Args[:0]
+		chain.values[len(chain.values)-1].Args = append(chain.values[len(chain.values)-1].Args, commandArgs...)
 
 		lastCommandPos = i
 		chain.values = chain.values[:len(chain.values)+1]
@@ -49,12 +46,9 @@ func ParseTo(chain *CommandsChain, args []string, trees ...*Tree) error {
 		t = next
 	}
 
-	lastCommandArgs := args[lastCommandPos+1:]
-	if cap(chain.values[len(chain.values)-1].Args) < len(lastCommandArgs) {
-		chain.values[len(chain.values)-1].Args = make([]string, len(lastCommandArgs))
-	}
-	chain.values[len(chain.values)-1].Args = chain.values[len(chain.values)-1].Args[:len(lastCommandArgs)]
-	copy(chain.values[len(chain.values)-1].Args, lastCommandArgs)
+	commandArgs := args[lastCommandPos+1:]
+	chain.values[len(chain.values)-1].Args = chain.values[len(chain.values)-1].Args[:0]
+	chain.values[len(chain.values)-1].Args = append(chain.values[len(chain.values)-1].Args, commandArgs...)
 
 	chain.cur = -1
 
