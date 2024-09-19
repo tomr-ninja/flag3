@@ -34,7 +34,7 @@ func TestParseArgs(t *testing.T) {
 			chain: []commandWithArgs{
 				{
 					Command: "first",
-					Args:    []string{},
+					Args:    nil,
 				},
 			},
 		},
@@ -56,7 +56,7 @@ func TestParseArgs(t *testing.T) {
 				},
 				{
 					Command: "second",
-					Args:    []string{},
+					Args:    nil,
 				},
 			},
 		},
@@ -97,25 +97,51 @@ func TestParseArgs(t *testing.T) {
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.input, func(t *testing.T) {
-			chain, err := flag3.Parse(strings.Split(tc.input, " "), t1, t2)
-			require.NoError(t, err)
-			require.True(t, chain.Next())
+	t.Run("Parse", func(t *testing.T) {
+		for _, tc := range testCases {
+			t.Run(tc.input, func(t *testing.T) {
+				chain, err := flag3.Parse(strings.Split(tc.input, " "), t1, t2)
+				require.NoError(t, err)
+				require.True(t, chain.Next())
 
-			for i, expected := range tc.chain {
-				require.Equal(t, expected.Command, chain.Command())
-				require.Equal(t, expected.Args, chain.Args())
+				for i, expected := range tc.chain {
+					require.Equal(t, expected.Command, chain.Command())
+					require.Equal(t, expected.Args, chain.Args())
 
-				ok := chain.Next()
-				if i < len(tc.chain)-1 {
-					require.True(t, ok)
-				} else {
-					require.False(t, ok)
+					ok := chain.Next()
+					if i < len(tc.chain)-1 {
+						require.True(t, ok)
+					} else {
+						require.False(t, ok)
+					}
 				}
-			}
-		})
-	}
+			})
+		}
+	})
+
+	t.Run("ParseTo", func(t *testing.T) {
+		chain := flag3.CommandsChain{}
+
+		for _, tc := range testCases {
+			t.Run(tc.input, func(t *testing.T) {
+				err := flag3.ParseTo(&chain, strings.Split(tc.input, " "), t1, t2)
+				require.NoError(t, err)
+				require.True(t, chain.Next())
+
+				for i, expected := range tc.chain {
+					require.Equal(t, expected.Command, chain.Command())
+					require.Equal(t, expected.Args, chain.Args())
+
+					ok := chain.Next()
+					if i < len(tc.chain)-1 {
+						require.True(t, ok)
+					} else {
+						require.False(t, ok)
+					}
+				}
+			})
+		}
+	})
 }
 
 func TestParseArgsError(t *testing.T) {
@@ -125,6 +151,14 @@ func TestParseArgsError(t *testing.T) {
 	require.Error(t, err)
 
 	_, err = flag3.Parse([]string{}, tree)
+	require.Error(t, err)
+
+	chain := flag3.CommandsChain{}
+
+	err = flag3.ParseTo(&chain, []string{"unknown"}, tree)
+	require.Error(t, err)
+
+	err = flag3.ParseTo(&chain, []string{}, tree)
 	require.Error(t, err)
 }
 
