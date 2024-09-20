@@ -40,7 +40,7 @@ func extractOne(args []string) (Flag, []string, bool) {
 		args = args[2:]
 
 	case len(args[0]) >= 5 && args[0][:2] == "--" && isLatinLetter(args[0][2]):
-		div := strings.IndexRune(args[0], '=')
+		div := strings.IndexByte(args[0], '=')
 		if div == -1 {
 			return Flag{}, args, false
 		}
